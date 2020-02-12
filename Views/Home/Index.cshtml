@@ -1,0 +1,133 @@
+﻿@using System.Drawing
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DocuVieware</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="http://fonts.googleapis.com/css?family=Droid+Serif|Montserrat" rel="stylesheet" type="text/css">
+    <script src="~/Scripts/jquery-3.1.0.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/docuvieware-min.js"></script>
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    
+    <link href="~/Content/docuvieware-min.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+    
+    <div class="container">
+        <button id="changelayout" onclick="changelayout()">Add Viewer Horizontally</button>
+
+        <div id="main_cont" width="100%">
+            <div id="viewer" style="width:100%; height:900px; display: inline-block; float:left">
+                @{
+                    GdPicture14.WEB.DocuVieware docuVieware = new GdPicture14.WEB.DocuVieware
+                    {
+                        ID = "DocuVieware1",
+                        Timeout = MvcApplication.SESSION_TIMEOUT,
+                        Height = new System.Web.UI.WebControls.Unit("100%"),
+                        Width = new System.Web.UI.WebControls.Unit("100%"),
+                        SinglePageView = false,
+                        ToolbarBackColor = Color.White,
+                        EnableFileUploadButton = false,
+                        EnableLoadFromUriButton = false,
+                        EnableRotateButtons = false,
+                        EnableFitPageButton = false,
+                        EnableFitWidthButton = false,
+                        EnableZoom100Button = false,
+                        EnableMouseModeButtons = false,
+                        EnableFullScreenButton = false,
+                        ShowAnnotationsSnapIn = false,
+                        ShowTextSearchSnapIn = false,
+                        ShowThumbnailsSnapIn = false,
+                        ShowBookmarksSnapIn = false,
+                        EnableMultipleThumbnailSelection = false,
+                        CollapsedSnapIn = true,
+                        EnableFormFieldsEdition = false,
+                        EnableTwainAcquisitionButton = false
+                    };
+                    string Path = "DocuViewareFlyer.pdf";
+                    docuVieware.LoadFromStream(new FileStream(HttpRuntime.AppDomainAppPath + "\\Images\\" + Path, FileMode.Open));
+                    docuVieware.RenderControl(Output);
+                    docuVieware.Dispose();
+                }
+            </div>
+
+
+            <div id="viewer2" style="width:45%; height:500px; display: inline-block; float:left; margin-left:20px">
+                @{
+                    GdPicture14.WEB.DocuVieware docuVieware2 = new GdPicture14.WEB.DocuVieware
+                    {
+                        ID = "DocuVieware2",
+                        Timeout = MvcApplication.SESSION_TIMEOUT,
+                        Height = new System.Web.UI.WebControls.Unit("100%"),
+                        Width = new System.Web.UI.WebControls.Unit("100%"),
+                        SinglePageView = false,
+                        ShowSnapInPanelHeader = false,
+                        ToolbarBackColor = Color.White,
+                        EnableFileUploadButton = false,
+                        EnableLoadFromUriButton = false,
+                        EnableRotateButtons = false,
+                        EnableFitPageButton = false,
+                        EnableFitWidthButton = false,
+                        EnableZoom100Button = false,
+                        EnableMouseModeButtons = false,
+                        EnableFullScreenButton = false,
+                        ShowAnnotationsSnapIn = false,
+                        ShowTextSearchSnapIn = false,
+                        ShowThumbnailsSnapIn = false,
+                        ShowBookmarksSnapIn = false,
+                        EnableMultipleThumbnailSelection = false,
+                        CollapsedSnapIn = true,
+                        EnableFormFieldsEdition = false,
+                        EnableTwainAcquisitionButton = false
+                    };
+
+                    docuVieware2.RenderControl(Output);
+                    docuVieware2.Dispose();
+                }
+            </div>
+        </div>
+
+    </div>
+    <script>
+
+        $('#viewer2').css("display", "none");
+
+        var minimized = false;
+
+
+        function changelayout() {
+            if (minimized == false) {
+                $("#viewer").css({ "height": "500px", "width": "45%" });
+                DocuViewareAPI.UpdateLayout("DocuVieware1");
+                var path = '@Path';
+                console.log(path);
+                DocuViewareAPI.PostCustomServerAction("DocuVieware2", true, "load" ,path , function (result) { console.log(result) }, function () { console.log("error") });
+                minimized = true;
+                $('#viewer2').css("display", "inline");
+                $('#changelayout').html("Return to Single Viewer");
+            }
+            else {
+               $("#viewer").css({ "height": "800px", "width": "100%" });
+                DocuViewareAPI.UpdateLayout("DocuVieware1");
+                minimized = false;
+                $('#viewer2').css("display", "none");
+                 $('#changelayout').html("Add Viewer Horizontally");
+            }
+
+
+        }
+
+
+    </script>
+</body>
+
+</html>
